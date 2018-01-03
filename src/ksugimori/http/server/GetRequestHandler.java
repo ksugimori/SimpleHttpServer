@@ -31,6 +31,7 @@ public class GetRequestHandler implements RequestHandler {
       response.addHeaderField("Content-Type", contentType);
     } catch (IOException e) {
       response = new Response(protocolVersion, Status.NOT_FOUND);
+      response.setBody(SimpleHttpServer.readErrorPage(Status.NOT_FOUND));
     }
 
     return response;

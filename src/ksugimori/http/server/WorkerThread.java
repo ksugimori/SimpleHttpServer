@@ -11,10 +11,11 @@ import ksugimori.http.message.Method;
 import ksugimori.http.message.Parser;
 import ksugimori.http.message.Request;
 import ksugimori.http.message.Response;
+import ksugimori.http.message.Status;
 
 public class WorkerThread extends Thread {
   private Socket socket;
-  private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss.S");
+  private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss.SSS");
 
   public WorkerThread(Socket socket) {
     super();
@@ -24,7 +25,14 @@ public class WorkerThread extends Thread {
   @Override
   public void run() {
     try (InputStream in = socket.getInputStream(); OutputStream out = socket.getOutputStream()) {
-      Request request = Parser.parseRequest(in);
+      Request request;
+      try {
+        request = Parser.parseRequest(in);
+      } catch (InvalidMessageException e) {
+        Response response = new Response(Parser.protocolVersion, Status.BAD_REQUEST);
+        Parser.writeResponse(out, response);
+        return;
+      }
 
       Method method = request.getMethod();
       RequestHandler handler = RequestHandler.of(method);
@@ -32,19 +40,16 @@ public class WorkerThread extends Thread {
 
       Parser.writeResponse(out, response);
 
-      log(request, response);
+      accessLog(request, response);
 
       socket.close();
-    } catch (InvalidMessageException e) {
-      System.out.println("invalid message");
-      return;
     } catch (IOException e) {
       System.out.println("IOException");
       
     }
   }
 
-  private void log(Request req, Response resp) {
+  private void accessLog(Request req, Response resp) {
     Date date = new Date();
     System.out.printf("[%s] \"%s\" %d%n", dateFormat.format(date), req.toString(),
         resp.getStatusCode());

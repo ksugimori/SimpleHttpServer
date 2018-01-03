@@ -13,6 +13,8 @@ import java.util.regex.Pattern;
 import ksugimori.http.exception.InvalidMessageException;
 
 public class Parser {
+  public static final String protocolVersion = "HTTP/1.1";
+  
   private static Pattern requestLine =
       Pattern.compile("^(?<method>\\S+) (?<target>\\S+) (?<version>\\S+)$");
   private static final String SP = " ";

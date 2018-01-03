@@ -1,0 +1,35 @@
+@charset "UTF-8";
+
+body {
+	font-family: Helvetica, Arial, sans-serif;
+}
+
+.container {
+	width: 70%;
+	max-width: 980px;
+	margin: 0 auto;
+}
+
+h1 {
+	font-size: 48px;
+}
+
+h2 {
+	font-size: 38px;
+}
+
+h3 {
+	font-size: 28px;
+}
+
+h4 {
+	font-size: 20px;
+}
+
+h5 {
+	font-size: 14px;
+}
+
+h6 {
+	font-size: 8px;
+}
