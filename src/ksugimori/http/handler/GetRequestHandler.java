@@ -1,4 +1,4 @@
-package ksugimori.http.server;
+package ksugimori.http.handler;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -6,6 +6,7 @@ import java.nio.file.Path;
 import ksugimori.http.message.Request;
 import ksugimori.http.message.Response;
 import ksugimori.http.message.Status;
+import ksugimori.http.server.SimpleHttpServer;
 
 /**
  * GET リクエストのハンドラ

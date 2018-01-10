@@ -7,6 +7,7 @@ import java.net.Socket;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import ksugimori.http.exception.InvalidMessageException;
+import ksugimori.http.handler.RequestHandler;
 import ksugimori.http.message.Method;
 import ksugimori.http.message.Parser;
 import ksugimori.http.message.Request;

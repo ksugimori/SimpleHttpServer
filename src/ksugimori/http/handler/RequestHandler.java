@@ -1,4 +1,4 @@
-package ksugimori.http.server;
+package ksugimori.http.handler;
 
 
 import ksugimori.http.message.Method;
