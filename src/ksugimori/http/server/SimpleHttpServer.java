@@ -42,6 +42,7 @@ public class SimpleHttpServer {
    */
   public static String fileNameToContentType(String fileName) {
     for (Map.Entry<String, String> e : mimeTypes.entrySet()) {
+      // TODO 拡張子は正規表現で
       if (fileName.endsWith(e.getKey()))
         return e.getValue();
     }
