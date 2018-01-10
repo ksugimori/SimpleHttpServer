@@ -7,6 +7,7 @@ import ksugimori.http.message.Request;
 import ksugimori.http.message.Response;
 import ksugimori.http.message.Status;
 import ksugimori.http.server.SimpleHttpServer;
+import ksugimori.http.util.StringUtils;
 
 /**
  * GET リクエストのハンドラ
@@ -26,8 +27,8 @@ public class GetRequestHandler implements RequestHandler {
       response = new Response(protocolVersion, Status.OK);
       response.setBody(Files.readAllBytes(target));
       
-      String fileName = target.getFileName().toString();
-      String contentType = SimpleHttpServer.fileNameToContentType(fileName);
+      String ext = StringUtils.getFileExtension(target.getFileName().toString());
+      String contentType = SimpleHttpServer.extensionToContentType(ext);
       
       response.addHeaderField("Content-Type", contentType);
     } catch (IOException e) {
