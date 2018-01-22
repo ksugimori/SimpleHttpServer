@@ -6,7 +6,8 @@ import java.io.OutputStream;
 import java.net.Socket;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import ksugimori.http.exception.InvalidMessageException;
+import ksugimori.http.exception.ParseException;
+import ksugimori.http.exception.UnsupportedMethodException;
 import ksugimori.http.handler.RequestHandler;
 import ksugimori.http.message.Method;
 import ksugimori.http.message.Parser;
@@ -27,32 +28,47 @@ public class WorkerThread extends Thread {
   public void run() {
     try (InputStream in = socket.getInputStream(); OutputStream out = socket.getOutputStream()) {
       Request request;
+      Response response;
+
       try {
         request = Parser.parseRequest(in);
-      } catch (InvalidMessageException e) {
-        Response response = new Response(Parser.protocolVersion, Status.BAD_REQUEST);
-        Parser.writeResponse(out, response);
-        return;
-      }
+        Method method = request.getMethod();
+        RequestHandler handler = RequestHandler.of( method );
 
-      Method method = request.getMethod();
-      RequestHandler handler = RequestHandler.of(method);
-      Response response = handler.handle(request);
+        response = handler.handle(request);
+
+        accessLog(request.getRequestLine(), response.getStatusCode());
+      } catch (ParseException | UnsupportedMethodException e) {
+        response = new Response(Parser.PROTOCOL_VERSION, Status.BAD_REQUEST);
+        response.setBody(SimpleHttpServer.readErrorPage(Status.BAD_REQUEST));
+
+        errorLog(e.getMessage());
+      }
 
       Parser.writeResponse(out, response);
 
-      accessLog(request, response);
-
       socket.close();
     } catch (IOException e) {
-      System.out.println("IOException");
-      
+      errorLog("socket closed by client?");
     }
   }
 
-  private void accessLog(Request req, Response resp) {
+  /**
+   * アクセスログを出力します
+   * @param requestLine
+   * @param responseCode
+   */
+  private void accessLog(String requestLine, int responseCode) {
     Date date = new Date();
-    System.out.printf("[%s] \"%s\" %d%n", dateFormat.format(date), req.toString(),
-        resp.getStatusCode());
+    System.out.printf("[%s] \"%s\" %d%n", dateFormat.format(date), requestLine, responseCode);
+  }
+
+  /**
+   * エラーログを出力します
+   * @param message
+   */
+  private void errorLog(String message) {
+    Date date = new Date();
+    System.out.printf("[%s] %s%n", dateFormat.format(date), message);
   }
 }

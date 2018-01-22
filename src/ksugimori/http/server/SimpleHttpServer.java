@@ -8,7 +8,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.regex.Pattern;
 import ksugimori.http.message.Status;
 
 public class SimpleHttpServer {
@@ -23,16 +22,12 @@ public class SimpleHttpServer {
 
     mimeTypes = new HashMap<>();
     mimeTypes.put("html", "text/html");
-    mimeTypes.put("htm", "text/html");
     mimeTypes.put("css", "text/css");
     mimeTypes.put("js", "application/js");
-    mimeTypes.put("json", "application/json");
     mimeTypes.put("png", "image/png");
-    mimeTypes.put("jpeg", "image/jpeg");
-    mimeTypes.put("jpg", "image/jpeg");
-    mimeTypes.put("gif", "image/gif");
 
     errorPages = new HashMap<>();
+    errorPages.put(Status.BAD_REQUEST, documentRoot.resolve("error/400.html"));
     errorPages.put(Status.NOT_FOUND, documentRoot.resolve("error/404.html"));
   }
 
@@ -75,8 +70,9 @@ public class SimpleHttpServer {
       }
 
     } catch (IOException e) {
-      System.out.println("CANNOT START SERVER");
+      System.out.println(e.getMessage());
     }
-
   }
+
+  //
 }
