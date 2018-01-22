@@ -10,12 +10,12 @@ import java.io.OutputStreamWriter;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import ksugimori.http.exception.InvalidMessageException;
+import ksugimori.http.exception.ParseException;
 
 public class Parser {
-  public static final String protocolVersion = "HTTP/1.1";
+  public static final String PROTOCOL_VERSION = "HTTP/1.1";
   
-  private static Pattern requestLine =
+  private static Pattern requestLinePattern =
       Pattern.compile("^(?<method>\\S+) (?<target>\\S+) (?<version>\\S+)$");
   private static final String SP = " ";
   private static final String CRLF = "\r\n";
@@ -25,24 +25,22 @@ public class Parser {
    * 
    * @param in
    * @return
-   * @throws InvalidMessageException
+   * @throws ParseException
    * @throws IOException
    */
-  public static Request parseRequest(InputStream in) throws InvalidMessageException, IOException {
+  public static Request parseRequest(InputStream in) throws ParseException, IOException {
     BufferedReader br = new BufferedReader(new InputStreamReader(in));
-    String startLine = br.readLine();
+    String requestLine = br.readLine();
 
-    Matcher matcher = requestLine.matcher(startLine);
+    Matcher matcher = requestLinePattern.matcher(requestLine);
 
     if (!matcher.matches()) {
-      throw new InvalidMessageException("CANNOT PARSE REQUEST LINE.");
+      throw new ParseException(requestLine);
     }
 
     Method method = Method.valueOf(matcher.group("method"));
     String target = matcher.group("target");
     String version = matcher.group("version");
-
-    // TODO Header, body も読む？
 
     return new Request(method, target, version);
   }
