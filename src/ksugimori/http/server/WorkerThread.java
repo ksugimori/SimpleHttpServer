@@ -69,6 +69,6 @@ public class WorkerThread extends Thread {
    */
   private void errorLog(String message) {
     Date date = new Date();
-    System.out.printf("[%s] %s%n", dateFormat.format(date), message);
+    System.out.printf("[%s] [ERROR] %s%n", dateFormat.format(date), message);
   }
 }
