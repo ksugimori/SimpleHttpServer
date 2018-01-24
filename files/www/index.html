@@ -3,15 +3,23 @@
 <head>
 <title>SIMPLE HTTP SERVER</title>
 <meta charset="UTF-8">
-<link href="css/style.css" rel="stylesheet">
+<link href="/css/style.css" rel="stylesheet">
 </head>
 
 <body>
 	<div class="container">
 		<h1>Index</h1>
-		<form action="/" method="post">
+		
+		<h4>GET</h4>
+		<ul class="links">
+			<li><a href="./about.html">about this program</a></li>
+			<li><a href="./path/to/unknown.html">unknown path (/path/to/unknown.html) </a></li>
+		</ul>
+		
+		<h4>POST</h4>
+		<form action="/" method="post" style="padding-left: 40px;">
 			<input type="text" value="hello" />
-			<button type="submit">POST</button>
+			<button type="submit" class="btn">POST</button>
 		</form>
 	</div>
 </body>
