@@ -8,6 +8,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import ksugimori.http.message.Status;
 
 public class SimpleHttpServer {
@@ -62,11 +64,11 @@ public class SimpleHttpServer {
       System.out.println("SERVER START: ");
       System.out.println("LISTENING ON: " + server.getLocalSocketAddress());
 
+      ExecutorService executor = Executors.newCachedThreadPool();
+
       while (true) {
         Socket socket = server.accept();
-
-        WorkerThread worker = new WorkerThread(socket);
-        worker.start();
+        executor.submit(new WorkerThread(socket));
       }
 
     } catch (IOException e) {
