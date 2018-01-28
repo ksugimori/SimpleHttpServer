@@ -14,13 +14,13 @@ import ksugimori.http.message.Status;
 
 public class SimpleHttpServer {
   public static final int PORT = 8080;
-  public static final Path documentRoot;
+  private static final String documentRoot;
   private static final Map<String, String> mimeTypes;
   private static final Map<Status, Path> errorPages;
   private static final byte[] EMPTY_BYTE_ARRAY = {};
 
   static {
-    documentRoot = Paths.get(System.getProperty("user.dir"), "files", "www");
+    documentRoot = Paths.get(System.getProperty("user.dir"), "files", "www").toString();
 
     mimeTypes = new HashMap<>();
     mimeTypes.put("html", "text/html");
@@ -29,8 +29,12 @@ public class SimpleHttpServer {
     mimeTypes.put("png", "image/png");
 
     errorPages = new HashMap<>();
-    errorPages.put(Status.BAD_REQUEST, documentRoot.resolve("error/400.html"));
-    errorPages.put(Status.NOT_FOUND, documentRoot.resolve("error/404.html"));
+    errorPages.put(Status.BAD_REQUEST, Paths.get(documentRoot, "error/400.html"));
+    errorPages.put(Status.NOT_FOUND, Paths.get(documentRoot, "error/404.html"));
+  }
+
+  public static String getDocumentRoot() {
+    return documentRoot;
   }
 
   /**
