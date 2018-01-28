@@ -3,6 +3,7 @@ package ksugimori.http.handler;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import ksugimori.http.message.Request;
 import ksugimori.http.message.Response;
 import ksugimori.http.message.Status;
@@ -17,7 +18,7 @@ public class GetRequestHandler implements RequestHandler {
 
   @Override
   public Response handle(Request request) {
-    Path target = SimpleHttpServer.documentRoot.resolve(request.getTarget().replaceAll("^/", ""));
+    Path target = Paths.get(SimpleHttpServer.getDocumentRoot(), request.getTarget());
     if (Files.isDirectory(target)) {
       target = target.resolve("index.html");
     }
