@@ -27,30 +27,34 @@ public class WorkerThread extends Thread {
   @Override
   public void run() {
     try (InputStream in = socket.getInputStream(); OutputStream out = socket.getOutputStream()) {
-      Request request;
-      Response response;
 
-      try {
-        request = Parser.parseRequest(in);
-        Method method = request.getMethod();
-        RequestHandler handler = RequestHandler.of( method );
-
-        response = handler.handle(request);
-
-        accessLog(request.getRequestLine(), response.getStatusCode());
-      } catch (ParseException | UnsupportedMethodException e) {
-        response = new Response(Parser.PROTOCOL_VERSION, Status.BAD_REQUEST);
-        response.setBody(SimpleHttpServer.readErrorPage(Status.BAD_REQUEST));
-
-        errorLog(e.getMessage());
-      }
-
+      Response response = handleRequest(in);
       Parser.writeResponse(out, response);
 
-      socket.close();
     } catch (IOException e) {
       errorLog("socket closed by client?");
     }
+  }
+
+  private Response handleRequest(InputStream in) throws IOException {
+    Response response;
+
+    try {
+      Request request = Parser.parseRequest(in);
+      Method method = request.getMethod();
+      RequestHandler handler = RequestHandler.of( method );
+
+      response = handler.handle(request);
+
+      accessLog(request.getRequestLine(), response.getStatusCode());
+    } catch (ParseException | UnsupportedMethodException e) {
+      response = new Response(Parser.PROTOCOL_VERSION, Status.BAD_REQUEST);
+      response.setBody(SimpleHttpServer.readErrorPage(Status.BAD_REQUEST));
+
+      errorLog(e.getMessage());
+    }
+
+    return response;
   }
 
   /**
