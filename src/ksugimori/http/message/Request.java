@@ -6,12 +6,13 @@ package ksugimori.http.message;
  * @author ksugimori
  *
  */
-public class Request {
+public class Request extends AbstractHttpMessage {
   Method method;
   String target;
   String version;
 
   public Request(Method method, String target, String version) {
+    super();
     this.method = method;
     this.target = target;
     this.version = version;
@@ -29,13 +30,8 @@ public class Request {
     return version;
   }
 
-  public String getRequestLine() {
+  @Override
+  public String getFirstLine() {
     return method.toString() + " " + target + " " + version;
   }
-  
-  @Override
-  public String toString() {
-    return getRequestLine();
-  }
-
 }

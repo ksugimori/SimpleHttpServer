@@ -8,6 +8,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.util.Map;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import ksugimori.http.exception.ParseException;
@@ -17,6 +18,7 @@ public class Parser {
   
   private static Pattern requestLinePattern =
       Pattern.compile("^(?<method>\\S+) (?<target>\\S+) (?<version>\\S+)$");
+  private static final String EMPTY = "";
   private static final String SP = " ";
   private static final String CRLF = "\r\n";
 
@@ -42,7 +44,31 @@ public class Parser {
     String target = matcher.group("target");
     String version = matcher.group("version");
 
-    return new Request(method, target, version);
+    Request request = new Request(method, target, version);
+    readHeaders(br, request);
+    readBody(in, request);
+    
+    return request;
+  }
+
+  private static void readHeaders(BufferedReader br, Request request) throws IOException {
+    while ( true ) {
+      String line = br.readLine();
+      if ( EMPTY.equals(line.trim()) ) break; // header と body の区切りまで読む
+      
+      String[] tmp = line.split(": +");
+      if (tmp.length != 2) continue;
+      request.addHeaderField(tmp[0], tmp[1]);
+    }
+  }
+
+  private static void readBody(InputStream in, Request request) throws IOException {
+    Optional<String> contentLength = Optional.ofNullable(request.getHeaders().get("Content-Length"));
+    int length = contentLength.map(Integer::valueOf).orElse(0);
+    byte[] body = new byte[length];
+    in.read(body, 0, length);
+    
+    request.setBody(body);
   }
 
   public static void writeResponse(OutputStream out, Response response) throws IOException {

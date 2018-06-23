@@ -2,6 +2,7 @@ package ksugimori.http.message;
 
 public enum Status {
   OK(200, "OK"),
+  NO_CONTENT(204, "No Content"),
   BAD_REQUEST(400, "Bad Request"),
   NOT_FOUND(404, "Not Found");
   

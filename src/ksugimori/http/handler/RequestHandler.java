@@ -15,6 +15,9 @@ public interface RequestHandler {
       case GET:
         handler = new GetRequestHandler();
         break;
+      case POST:
+        handler = new PostRequestHandler();
+        break;
       default:
         throw new UnsupportedMethodException(method.toString());
     }
