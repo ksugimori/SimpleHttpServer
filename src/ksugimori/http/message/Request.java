@@ -31,7 +31,7 @@ public class Request extends AbstractHttpMessage {
   }
 
   @Override
-  public String getFirstLine() {
+  public String getStartLine() {
     return method.toString() + " " + target + " " + version;
   }
 }

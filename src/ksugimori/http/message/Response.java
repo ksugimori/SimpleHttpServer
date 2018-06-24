@@ -29,7 +29,7 @@ public class Response extends AbstractHttpMessage {
   }
 
   @Override
-  public String getFirstLine() {
+  public String getStartLine() {
     return version + " " + getStatusCode() + " " + getReasonPhrase();
   }
 }

@@ -29,10 +29,10 @@ public abstract class AbstractHttpMessage {
     return body;
   }
   
-  protected abstract String getFirstLine();
+  protected abstract String getStartLine();
   
   @Override
   public String toString() {
-    return getFirstLine() + " headers: " + headers + " body: " + new String(body, StandardCharsets.UTF_8);
+    return getStartLine() + " headers: " + headers + " body: " + new String(body, StandardCharsets.UTF_8);
   }
 }
