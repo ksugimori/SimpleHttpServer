@@ -46,7 +46,7 @@ public class WorkerThread extends Thread {
 
       response = handler.handle(request);
 
-      accessLog(request.getFirstLine(), response.getStatusCode());
+      accessLog(request.getStartLine(), response.getStatusCode());
     } catch (ParseException | UnsupportedMethodException e) {
       response = new Response(Parser.PROTOCOL_VERSION, Status.BAD_REQUEST);
       response.setBody(SimpleHttpServer.readErrorPage(Status.BAD_REQUEST));
