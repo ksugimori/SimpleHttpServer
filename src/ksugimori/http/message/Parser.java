@@ -18,6 +18,8 @@ public class Parser {
   
   private static Pattern requestLinePattern =
       Pattern.compile("^(?<method>\\S+) (?<target>\\S+) (?<version>\\S+)$");
+  private static Pattern headerPattern =
+      Pattern.compile("^(?<name>\\S+):[ \\t]?(?<value>.+)[ \\t]?$");
   private static final String EMPTY = "";
   private static final String SP = " ";
   private static final String CRLF = "\r\n";
@@ -51,14 +53,18 @@ public class Parser {
     return request;
   }
 
-  private static void readHeaders(BufferedReader br, Request request) throws IOException {
+  private static void readHeaders(BufferedReader br, Request request) throws IOException, ParseException {
     while ( true ) {
-      String line = br.readLine();
-      if ( EMPTY.equals(line.trim()) ) break; // header と body の区切りまで読む
-      
-      String[] tmp = line.split(": +");
-      if (tmp.length != 2) continue;
-      request.addHeaderField(tmp[0], tmp[1]);
+      String headerField = br.readLine();
+      if ( EMPTY.equals(headerField.trim()) ) break; // header と body の区切りまで読む
+
+      Matcher matcher = headerPattern.matcher(headerField);
+
+      if (matcher.matches()) {
+        request.addHeaderField(matcher.group("name"), matcher.group("value"));
+      } else {
+        throw new ParseException(headerField);
+      }
     }
   }
 
