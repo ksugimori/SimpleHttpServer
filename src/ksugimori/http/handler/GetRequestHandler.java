@@ -18,7 +18,13 @@ public class GetRequestHandler implements RequestHandler {
 
   @Override
   public Response handle(Request request) {
-    Path target = Paths.get(SimpleHttpServer.getDocumentRoot(), request.getTarget());
+    Path target = Paths.get(SimpleHttpServer.getDocumentRoot(), request.getTarget()).normalize();
+
+    // ドキュメントルート以下のみアクセス可能にする
+    if (!target.startsWith(SimpleHttpServer.getDocumentRoot())) {
+      return new Response(protocolVersion, Status.BAD_REQUEST);
+    }
+
     if (Files.isDirectory(target)) {
       target = target.resolve("index.html");
     }
