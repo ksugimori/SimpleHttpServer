@@ -48,7 +48,7 @@ public class Parser {
 
     Request request = new Request(method, target, version);
     readHeaders(br, request);
-    readBody(in, request);
+    readBody(br, request);
     
     return request;
   }
@@ -68,15 +68,16 @@ public class Parser {
     }
   }
 
-  private static void readBody(InputStream in, Request request) throws IOException {
+  private static void readBody(BufferedReader br, Request request) throws IOException {
     Optional<String> contentLength = Optional.ofNullable(request.getHeaders().get("Content-Length"));
     int length = contentLength.map(Integer::valueOf).orElse(0);
-    byte[] body = new byte[length];
-    in.read(body, 0, length);
-    
-    request.setBody(body);
+    char[] body = new char[length];
+    br.read(body, 0, length);
+
+    request.setBody((new String(body)).getBytes());
   }
 
+  
   public static void writeResponse(OutputStream out, Response response) throws IOException {
     BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(out));
 
