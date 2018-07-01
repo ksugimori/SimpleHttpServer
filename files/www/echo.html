@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>SIMPLE HTTP SERVER</title>
+<title>SIMPLE HTTP SERVER - echo -</title>
 <meta charset="UTF-8">
 <link href="/css/style.css" rel="stylesheet">
 <script src="https://code.jquery.com/jquery-3.3.1.min.js"
@@ -25,26 +25,20 @@ $(document).ready(function() {
 
 <body>
 	<div class="container">
-		<h1>Index</h1>
+		<h1>Echo POST message</h1>
 		
-		<h4>GET</h4>
-		<ul class="links">
-			<li><a href="./about.html">about this program</a></li>
-			<li><a href="./path/to/unknown.html">unknown path (/path/to/unknown.html) </a></li>
-		</ul>
-		
-		<h4>POST</h4>
 		<form id="echo-form" action="/webapp/echo" method="post" style="padding-left: 40px;">
 			<input type="text" name="text" value="hello" />
 			<button type="submit" class="btn">POST</button>
 		</form>
 		
-		<h5>POSTed value</h5>
+		<h4>POSTed value</h4>
 		<div>
 			<ul id="posted-list" style="list-style: none;">
 			</ul>
 		</div>
-
+		
+		<a href="/">Go Back to Index Page</a>
 	</div>
 </body>
 </html>

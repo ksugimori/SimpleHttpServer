@@ -8,20 +8,22 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import ksugimori.http.exception.ParseException;
 import ksugimori.http.exception.UnsupportedMethodException;
-import ksugimori.http.handler.RequestHandler;
-import ksugimori.http.message.Method;
 import ksugimori.http.message.Parser;
 import ksugimori.http.message.Request;
 import ksugimori.http.message.Response;
 import ksugimori.http.message.Status;
+import ksugimori.http.webapp.Controller;
+import ksugimori.http.webapp.Router;
 
 public class WorkerThread extends Thread {
   private Socket socket;
   private final SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss.SSS");
+  private Router router;
 
   public WorkerThread(Socket socket) {
     super();
     this.socket = socket;
+    this.router = Router.getInstance();
   }
 
   @Override
@@ -41,10 +43,8 @@ public class WorkerThread extends Thread {
 
     try {
       Request request = Parser.parseRequest(in);
-      Method method = request.getMethod();
-      RequestHandler handler = RequestHandler.of( method );
-
-      response = handler.handle(request);
+      Controller controller = router.route(request.getTarget());
+      response = controller.handle(request);
 
       accessLog(request.getStartLine(), response.getStatusCode());
     } catch (ParseException | UnsupportedMethodException e) {
