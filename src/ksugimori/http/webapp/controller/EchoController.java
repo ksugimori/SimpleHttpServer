@@ -26,6 +26,7 @@ public class EchoController extends Controller {
   private Response echo(Request request) {
     Response response = new Response(protocolVersion, Status.OK);
     response.setBody(request.getBody());
+    response.addHeaderField("Content-Length", Integer.toString(response.getBody().length));
     return response;
   }
 }
