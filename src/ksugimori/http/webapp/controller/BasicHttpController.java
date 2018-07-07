@@ -35,6 +35,7 @@ public class BasicHttpController extends Controller {
     try {
       response = new Response(protocolVersion, Status.OK);
       response.setBody(Files.readAllBytes(target));
+      response.addHeaderField("Content-Length", Integer.toString(response.getBody().length));
 
       String ext = StringUtils.getFileExtension(target.getFileName().toString());
       String contentType = SimpleHttpServer.extensionToContentType(ext);
@@ -43,6 +44,7 @@ public class BasicHttpController extends Controller {
     } catch (IOException e) {
       response = new Response(protocolVersion, Status.NOT_FOUND);
       response.setBody(SimpleHttpServer.readErrorPage(Status.NOT_FOUND));
+      response.addHeaderField("Content-Length", Integer.toString(response.getBody().length));
     }
 
     return response;
