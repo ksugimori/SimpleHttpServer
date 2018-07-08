@@ -86,10 +86,13 @@ public class Router {
    */
   public Controller route(String path) {
     String normalized = Paths.get(path).normalize().toString();
-    if (routingTable.containsKey(normalized)) {
-      return routingTable.get(normalized);
-    } else {
-      return new BasicHttpController();
+
+    for (Map.Entry<String, Controller> entry : routingTable.entrySet()) {
+      if (normalized.startsWith(entry.getKey())) {
+        return entry.getValue();
+      }
     }
+
+    return new BasicHttpController();
   }
 }
