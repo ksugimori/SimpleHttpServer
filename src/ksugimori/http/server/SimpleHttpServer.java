@@ -27,6 +27,7 @@ public class SimpleHttpServer {
     mimeTypes.put("css", "text/css");
     mimeTypes.put("js", "application/js");
     mimeTypes.put("png", "image/png");
+    mimeTypes.put("txt", "text/plain");
 
     errorPages = new HashMap<>();
     errorPages.put(Status.BAD_REQUEST, Paths.get(documentRoot, "error/400.html"));
