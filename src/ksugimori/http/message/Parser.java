@@ -1,13 +1,10 @@
 package ksugimori.http.message;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -136,21 +133,22 @@ public class Parser {
     request.setBody((new String(body)).getBytes());
   }
 
-  public static void writeResponse(OutputStream out, Response response) throws IOException {
-    BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(out));
+  public static byte[] serializeResponse(Response response) throws IOException {
+    ByteArrayOutputStream message = new ByteArrayOutputStream();
 
     String version = response.getVersion();
     Integer statusCode = response.getStatusCode();
     String reasonPhrase = response.getReasonPhrase();
 
-    writer.write(version + SP + statusCode + SP + reasonPhrase + CRLF);
+    message.write((version + SP + statusCode + SP + reasonPhrase + CRLF).getBytes());
     for (Map.Entry<String, String> field : response.getHeaders().entrySet()) {
-      writer.write(field.getKey() + ": " + field.getValue() + CRLF);
+      message.write((field.getKey() + ": " + field.getValue() + CRLF).getBytes());
     }
-    writer.write(CRLF);
-    writer.flush();
+    message.write(CRLF.getBytes());
 
     // ボディはファイルから読み取ったバイト列をそのまま書き込む
-    out.write(response.getBody());
+    message.write(response.getBody());
+    
+    return message.toByteArray();
   }
 }

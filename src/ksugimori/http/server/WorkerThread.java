@@ -29,10 +29,10 @@ public class WorkerThread extends Thread {
   @Override
   public void run() {
     try (InputStream in = socket.getInputStream(); OutputStream out = socket.getOutputStream()) {
-
       Response response = handleRequest(in);
-      Parser.writeResponse(out, response);
 
+      byte[] message = Parser.serializeResponse(response);
+      out.write(message);
     } catch (IOException e) {
       errorLog("socket closed by client?");
     }
@@ -59,6 +59,7 @@ public class WorkerThread extends Thread {
 
   /**
    * アクセスログを出力します
+   * 
    * @param requestLine
    * @param responseCode
    */
@@ -69,6 +70,7 @@ public class WorkerThread extends Thread {
 
   /**
    * エラーログを出力します
+   * 
    * @param message
    */
   private void errorLog(String message) {
