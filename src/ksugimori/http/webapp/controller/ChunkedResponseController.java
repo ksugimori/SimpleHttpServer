@@ -25,8 +25,7 @@ public class ChunkedResponseController extends Controller {
   @Override
   public Response doGet(Request request) {
     Response response = basicController.doGet(request);
-    chunk(response);
-    return response;
+    return chunk(response);
   }
 
   @Override
@@ -35,7 +34,7 @@ public class ChunkedResponseController extends Controller {
     return response;
   }
 
-  private void chunk(Response response) {
+  private Response chunk(Response response) {
     byte[] body = response.getBody();
 
     ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -52,11 +51,13 @@ public class ChunkedResponseController extends Controller {
       out.write(CRLF);
       out.write(CRLF);
     } catch (IOException e) {
-      return;
+      return response;
     }
     
     response.getHeaders().remove("Content-Length");
     response.addHeaderField("Transfer-Encoding", "chunked");
     response.setBody(out.toByteArray());
+    
+    return response;
   }
 }
